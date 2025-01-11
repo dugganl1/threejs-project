@@ -12,13 +12,28 @@ if (WebGL.isWebGL2Available()) {
     width: window.innerWidth,
     height: window.innerHeight,
   };
+  const aspectRatio = sizes.width / sizes.height;
 
   //Create camera
-  const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 100);
+  //const camera = new THREE.OrthographicCamera(-1 * aspectRatio, 1 * aspectRatio, 1, -1, 0.1, 100);
   scene.add(camera);
+  //camera.position.x = 1;
+  //camera.position.y = 1;
   camera.position.z = 3;
-  camera.position.y = 1;
-  camera.position.x = 1;
+
+  //Cursor moves
+  const cursor = {
+    x: 0,
+    y: 0,
+    targetX: 0,
+    targetY: 0,
+  };
+
+  window.addEventListener("mousemove", (event) => {
+    cursor.targetX = event.clientX / sizes.width - 0.5;
+    cursor.targetY = -(event.clientY / sizes.height - 0.5); // Note the negative sign
+  });
 
   //Add Canvas
   const canvas = document.querySelector("canvas.webgl");
@@ -76,15 +91,23 @@ if (WebGL.isWebGL2Available()) {
   function animate() {
     const elapsedTime = clock.getElapsedTime(); //Time elapsed since last frame
 
-    controls.update(); //for orbit
+    // controls.update(); //for orbit
 
-    // Gentle automatic rotation when not interacting
-    if (!controls.isDragging) {
-      //Multiply rotation speed by deltaTime
-      cube.rotation.x = elapsedTime * 0.5;
-      cube.rotation.y = elapsedTime * 0.5;
-      //cube.position.y = Math.sin(elapsedTime);
-    }
+    // // Gentle automatic rotation when not interacting
+    // if (!controls.isDragging) {
+    //   //Multiply rotation speed by deltaTime
+    //   //cube.rotation.x = elapsedTime * 0.5;
+    //   //cube.rotation.y = elapsedTime * 0.5;
+    //   //cube.position.y = Math.sin(elapsedTime);
+    // }
+
+    //Update camera
+    cursor.x += (cursor.targetX - cursor.x) * 0.1;
+    cursor.y += (cursor.targetY - cursor.y) * 0.1;
+
+    camera.position.x = Math.sin(cursor.x * Math.PI) * 3;
+    camera.position.y = cursor.y * 3;
+    camera.lookAt(cube.position);
 
     renderer.render(scene, camera);
   }
