@@ -12,10 +12,9 @@ if (WebGL.isWebGL2Available()) {
     width: window.innerWidth,
     height: window.innerHeight,
   };
-  const aspectRatio = sizes.width / sizes.height;
 
   //Create camera
-  const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
   //const camera = new THREE.OrthographicCamera(-1 * aspectRatio, 1 * aspectRatio, 1, -1, 0.1, 100);
   scene.add(camera);
   //camera.position.x = 1;
@@ -44,7 +43,7 @@ if (WebGL.isWebGL2Available()) {
   renderer.setPixelRatio(window.devicePixelRatio); // For sharper rendering
 
   //Add orbit controls
-  const controls = new OrbitControls(camera, renderer.domElement);
+  const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true; // Add smooth damping effect
   controls.dampingFactor = 0.05;
 
@@ -77,8 +76,8 @@ if (WebGL.isWebGL2Available()) {
   cube.scale.set(1, 1, 1);
 
   //Add axes helper
-  const axesHelper = new THREE.AxesHelper();
-  scene.add(axesHelper);
+  //const axesHelper = new THREE.AxesHelper();
+  //scene.add(axesHelper);
 
   //Clock
   //This is intended to ensure same frame rate regardless of computer performance
@@ -91,23 +90,23 @@ if (WebGL.isWebGL2Available()) {
   function animate() {
     const elapsedTime = clock.getElapsedTime(); //Time elapsed since last frame
 
-    // controls.update(); //for orbit
+    controls.update(); //for orbit
 
-    // // Gentle automatic rotation when not interacting
-    // if (!controls.isDragging) {
-    //   //Multiply rotation speed by deltaTime
-    //   //cube.rotation.x = elapsedTime * 0.5;
-    //   //cube.rotation.y = elapsedTime * 0.5;
-    //   //cube.position.y = Math.sin(elapsedTime);
-    // }
+    // Gentle automatic rotation when not interacting
+    if (!controls.isDragging) {
+      //Multiply rotation speed by deltaTime
+      cube.rotation.x = elapsedTime * 0.5;
+      cube.rotation.y = elapsedTime * 0.5;
+      cube.position.y = Math.sin(elapsedTime) * 0.25;
+    }
 
     //Update camera
-    cursor.x += (cursor.targetX - cursor.x) * 0.1;
-    cursor.y += (cursor.targetY - cursor.y) * 0.1;
+    // cursor.x += (cursor.targetX - cursor.x) * 0.1;
+    // cursor.y += (cursor.targetY - cursor.y) * 0.1;
 
-    camera.position.x = Math.sin(cursor.x * Math.PI) * 3;
-    camera.position.y = cursor.y * 3;
-    camera.lookAt(cube.position);
+    // camera.position.x = Math.sin(cursor.x * Math.PI) * 3;
+    // camera.position.y = cursor.y * 3;
+    // camera.lookAt(cube.position);
 
     renderer.render(scene, camera);
   }
