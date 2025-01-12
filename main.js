@@ -63,11 +63,26 @@ if (WebGL.isWebGL2Available()) {
 
   //Create a cube
   const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+  // const geometry = new THREE.BufferGeometry();
+
+  // const count = 50;
+  // const positionsArray = new Float32Array(count * 3 * 3);
+
+  // for (let i = 0; i < count * 3 * 3; i++) {
+  //   positionsArray[i] = (Math.random() - 0.5) * 4;
+  // }
+
+  // const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3);
+  // geometry.setAttribute("position", positionsAttribute);
+
   const material = new THREE.MeshPhongMaterial({
     color: 0xffb81c,
     shininess: 100,
     flatShading: false,
+    //wireframe: true,
   });
+
   const cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
   cube.position.set(0, 0, 0);
