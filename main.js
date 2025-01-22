@@ -2,8 +2,16 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import WebGL from "three/addons/capabilities/WebGL.js";
 import gsap from "gsap";
+import * as dat from "lil-gui";
 
 if (WebGL.isWebGL2Available()) {
+  //Debug
+  const gui = new dat.GUI();
+  const debugObject = {};
+
+  //Add base Canvas
+  const canvas = document.querySelector("canvas.webgl");
+
   //Create scene
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x009a49);
@@ -34,9 +42,6 @@ if (WebGL.isWebGL2Available()) {
     cursor.targetY = -(event.clientY / sizes.height - 0.5); // Note the negative sign
   });
 
-  //Add Canvas
-  const canvas = document.querySelector("canvas.webgl");
-
   //Create renderer
   const renderer = new THREE.WebGLRenderer({ canvas: canvas });
   renderer.setSize(sizes.width, sizes.height);
@@ -64,20 +69,10 @@ if (WebGL.isWebGL2Available()) {
   //Create a cube
   const geometry = new THREE.BoxGeometry(1, 1, 1);
 
-  // const geometry = new THREE.BufferGeometry();
-
-  // const count = 50;
-  // const positionsArray = new Float32Array(count * 3 * 3);
-
-  // for (let i = 0; i < count * 3 * 3; i++) {
-  //   positionsArray[i] = (Math.random() - 0.5) * 4;
-  // }
-
-  // const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3);
-  // geometry.setAttribute("position", positionsAttribute);
+  debugObject.color = "#ffb81c";
 
   const material = new THREE.MeshPhongMaterial({
-    color: 0xffb81c,
+    color: debugObject.color,
     shininess: 100,
     flatShading: false,
     //wireframe: true,
@@ -93,6 +88,14 @@ if (WebGL.isWebGL2Available()) {
   //Add axes helper
   //const axesHelper = new THREE.AxesHelper();
   //scene.add(axesHelper);
+
+  //Adding debug tweaks, examples
+  gui.add(cube.position, "y").min(-3).max(3).step(0.01).name("elevation");
+  gui.add(cube, "visible");
+  gui.add(material, "wireframe");
+  gui.addColor(material, "color").onChange((value) => {
+    material.color.set(value);
+  });
 
   //Clock
   //This is intended to ensure same frame rate regardless of computer performance
@@ -110,9 +113,9 @@ if (WebGL.isWebGL2Available()) {
     // Gentle automatic rotation when not interacting
     if (!controls.isDragging) {
       //Multiply rotation speed by deltaTime
-      cube.rotation.x = elapsedTime * 0.5;
-      cube.rotation.y = elapsedTime * 0.5;
-      cube.position.y = Math.sin(elapsedTime) * 0.25;
+      // cube.rotation.x = elapsedTime * 0.5;
+      // cube.rotation.y = elapsedTime * 0.5;
+      // cube.position.y = Math.sin(elapsedTime) * 0.25;
     }
 
     //Update camera
