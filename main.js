@@ -5,8 +5,14 @@ import gsap from "gsap";
 import * as dat from "lil-gui";
 
 if (WebGL.isWebGL2Available()) {
+  // Textures
+  const loadingManager = new THREE.LoadingManager();
+  const textureLoader = new THREE.TextureLoader(); //Note: one texture loader can load multiple textures
+  const colorTexture = textureLoader.load("/static/textures/door/color.jpg");
+  colorTexture.colorSpace = THREE.SRGBColorSpace;
+
   //Debug
-  const gui = new dat.GUI();
+  //const gui = new dat.GUI();
   const debugObject = {};
 
   //Add base Canvas
@@ -72,8 +78,9 @@ if (WebGL.isWebGL2Available()) {
   debugObject.color = "#ffb81c";
 
   const material = new THREE.MeshPhongMaterial({
-    color: debugObject.color,
-    shininess: 100,
+    //color: debugObject.color,
+    map: colorTexture,
+    //shininess: 100,
     flatShading: false,
     //wireframe: true,
   });
@@ -90,12 +97,12 @@ if (WebGL.isWebGL2Available()) {
   //scene.add(axesHelper);
 
   //Adding debug tweaks, examples
-  gui.add(cube.position, "y").min(-3).max(3).step(0.01).name("elevation");
-  gui.add(cube, "visible");
-  gui.add(material, "wireframe");
-  gui.addColor(material, "color").onChange((value) => {
-    material.color.set(value);
-  });
+  // gui.add(cube.position, "y").min(-3).max(3).step(0.01).name("elevation");
+  // gui.add(cube, "visible");
+  // gui.add(material, "wireframe");
+  // gui.addColor(material, "color").onChange((value) => {
+  //   material.color.set(value);
+  // });
 
   //Clock
   //This is intended to ensure same frame rate regardless of computer performance
